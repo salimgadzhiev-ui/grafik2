@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Рабочий график</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue-50: #eff6ff;
+      --blue-100: #dbeafe;
+      --blue-500: #3b82f6;
+      --blue-600: #2563eb;
+      --blue-700: #1d4ed8;
+      --purple-50: #faf5ff;
+      --purple-100: #f3e8ff;
+      --purple-500: #a855f7;
+      --purple-600: #9333ea;
+      --purple-700: #7e22ce;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5;
+      --gray-300: #d4d4d4;
+      --gray-400: #a3a3a3;
+      --gray-500: #737373;
+      --gray-600: #525252;
+      --gray-700: #404040;
+      --gray-800: #262626;
+      --gray-900: #171717;
+      --red-400: #f87171;
+      --red-500: #ef4444;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(to bottom, #fafafa 0%, #f5f5f5 100%);
+      padding: 1.5rem 1rem;
+      min-height: 100vh;
+      color: var(--gray-900);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    .today-block {
+      background: linear-gradient(135deg, #ffffff 0%, var(--blue-50) 100%);
+      border: 1px solid rgba(37, 99, 235, 0.1);
+      border-radius: 1.25rem;
+      padding: 2rem 1.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .today-block::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--blue-600) 0%, var(--blue-500) 100%);
+      border-radius: 1.25rem 1.25rem 0 0;
+    }
+
+    .today-block.purple {
+      background: linear-gradient(135deg, #ffffff 0%, var(--purple-50) 100%);
+      border-color: rgba(147, 51, 234, 0.1);
+    }
+
+    .today-block.purple::before {
+      background: linear-gradient(90deg, var(--purple-600) 0%, var(--purple-500) 100%);
+    }
+
+    .today-block:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.1), 0 6px 8px -2px rgba(0, 0, 0, 0.04);
+    }
+
+    .today-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    .today-date {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+
+    .week-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--blue-600) 0%, var(--blue-700) 100%);
+      color: white;
+      padding: 0.625rem 1.25rem;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      letter-spacing: -0.01em;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      transition: all 0.2s ease;
+    }
+
+    .week-badge.purple {
+      background: linear-gradient(135deg, var(--purple-600) 0%, var(--purple-700) 100%);
+      box-shadow: 0 4px 12px rgba(147, 51, 234, 0.25);
+    }
+
+    .week-badge:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+    }
+
+    .week-badge.purple:hover {
+      box-shadow: 0 6px 16px rgba(147, 51, 234, 0.35);
+    }
+
+    .nav-panel {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 1rem;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow);
+      gap: 1rem;
+    }
+
+    .nav-btn {
+      background: white;
+      border: 1px solid var(--gray-300);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--gray-700);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-btn:hover {
+      background: var(--gray-50);
+      border-color: var(--gray-400);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-btn:active {
+      transform: translateY(0);
+    }
+
+    .month-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      letter-spacing: -0.02em;
+      text-transform: capitalize;
+    }
+
+    .calendar {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    .calendar-header {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background: linear-gradient(180deg, var(--gray-900) 0%, var(--gray-800) 100%);
+      color: white;
+      font-weight: 600;
+      font-size: 0.8125rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .calendar-header div {
+      padding: 0.875rem 0.5rem;
+      text-align: center;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: var(--gray-200);
+      padding: 1px;
+    }
+
+    .calendar-day {
+      min-height: 5rem;
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 0.9375rem;
+      background: white;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .calendar-day:hover {
+      background: var(--gray-50);
+      z-index: 1;
+    }
+
+    .calendar-day.current-month {
+      color: var(--gray-900);
+    }
+
+    .calendar-day.other-month {
+      color: var(--gray-400);
+      opacity: 0.5;
+    }
+
+    .calendar-day.today {
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      box-shadow: inset 0 0 0 2px var(--red-500);
+    }
+
+    .calendar-day.today:hover {
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    }
+
+    .calendar-day.week1 {
+      background: linear-gradient(135deg, #ffffff 0%, var(--blue-50) 100%);
+    }
+
+    .calendar-day.week1:hover {
+      background: var(--blue-100);
+    }
+
+    .calendar-day.week2 {
+      background: linear-gradient(135deg, #ffffff 0%, var(--purple-50) 100%);
+    }
+
+    .calendar-day.week2:hover {
+      background: var(--purple-100);
+    }
+
+    .day-number {
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .week-label {
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      color: white;
+      align-self: flex-start;
+      margin-top: auto;
+      letter-spacing: 0.02em;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
+
+    .week-label.week1 {
+      background: linear-gradient(135deg, var(--blue-600) 0%, var(--blue-700) 100%);
+    }
+
+    .week-label.week2 {
+      background: linear-gradient(135deg, var(--purple-600) 0%, var(--purple-700) 100%);
+    }
+
+    .legend {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.875rem;
+      color: var(--gray-600);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+
+    .legend-square {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border-radius: 0.25rem;
+      vertical-align: middle;
+      margin: 0 0.375rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .legend-blue {
+      background: linear-gradient(135deg, var(--blue-600) 0%, var(--blue-700) 100%);
+    }
+
+    .legend-purple {
+      background: linear-gradient(135deg, var(--purple-600) 0%, var(--purple-700) 100%);
+    }
+
+    @media (min-width: 640px) {
+      body {
+        padding: 2rem 1.5rem;
+      }
+
+      .today-block {
+        padding: 2.5rem 2rem;
+      }
+
+      .today-title {
+        font-size: 1.75rem;
+      }
+
+      .today-date {
+        font-size: 2.5rem;
+      }
+
+      .calendar-day {
+        min-height: 5.5rem;
+        padding: 1rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding: 3rem 2rem;
+      }
+
+      .today-block {
+        padding: 3rem 2.5rem;
+      }
+
+      .today-title {
+        font-size: 2rem;
+      }
+
+      .today-date {
+        font-size: 3rem;
+      }
+
+      .nav-panel {
+        padding: 1.25rem 1.5rem;
+      }
+
+      .month-title {
+        font-size: 1.25rem;
+      }
+
+      .calendar-day {
+        min-height: 6rem;
+      }
+
+      .day-number {
+        font-size: 1.0625rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .calendar-header {
+        font-size: 0.75rem;
+      }
+
+      .calendar-header div {
+        padding: 0.75rem 0.25rem;
+      }
+
+      .calendar-day {
+        min-height: 4rem;
+        padding: 0.5rem;
+      }
+
+      .day-number {
+        font-size: 0.875rem;
+      }
+
+      .week-label {
+        font-size: 0.5625rem;
+        padding: 0.1875rem 0.375rem;
+      }
+
+      .nav-btn {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.8125rem;
+      }
+
+      .month-title {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Блок "Сегодня" -->
+    <div id="todayBlock" class="today-block">
+      <div class="today-title" id="todayTitle">Сегодня: ...</div>
+      <div class="today-date" id="todayDate">...</div>
+      <div>
+        <span id="weekBadge" class="week-badge">Это ...-я неделя графика</span>
+      </div>
+    </div>
+
+    <!-- Навигация -->
+    <div class="nav-panel">
+      <button id="prevBtn" class="nav-btn">← Назад</button>
+      <div class="month-title" id="monthTitle">...</div>
+      <button id="nextBtn" class="nav-btn">Вперёд →</button>
+    </div>
+
+    <!-- Календарь -->
+    <div class="calendar">
+      <div class="calendar-header">
+        <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+      </div>
+      <div id="calendarGrid" class="calendar-grid"></div>
+    </div>
+
+    <!-- Легенда -->
+    <div class="legend">
+      <span>1-я неделя — </span>
+      <span class="legend-square legend-blue"></span>
+      <span> | 2-я неделя — </span>
+      <span class="legend-square legend-purple"></span>
+    </div>
+  </div>
+
+  <script>
+    // Текущая дата
+    let today = new Date();
+    let selectedMonth = new Date();
+
+    // Базовая дата: 1 декабря 2025 (понедельник)
+    const BASE_MONDAY = new Date(2025, 11, 1);
+
+    // Получить понедельник недели
+    function getMonday(date) {
+      const d = new Date(date);
+      const day = d.getDay() || 7;
+      d.setDate(d.getDate() - (day - 1));
+      return d;
+    }
+
+    // Определить тип недели (1 или 2)
+    function getWeekType(date) {
+      const monday = getMonday(date);
+      const diffMs = monday.getTime() - BASE_MONDAY.getTime();
+      const diffWeeks = Math.floor(diffMs / (7 * 24 * 60 * 60 * 1000));
+      return diffWeeks % 2 === 0 ? 1 : 2;
+    }
+
+    // Генерация календаря
+    function generateCalendar(year, month) {
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const startOffset = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+      const days = [];
+
+      // Дни предыдущего месяца
+      for (let i = startOffset; i > 0; i--) {
+        days.push(new Date(year, month, -i + 1));
+      }
+
+      // Дни текущего месяца
+      for (let day = 1; day <= lastDay.getDate(); day++) {
+        days.push(new Date(year, month, day));
+      }
+
+      // Дни следующего месяца
+      while (days.length % 7 !== 0) {
+        const nextDay = days.length - startOffset - lastDay.getDate() + 1;
+        days.push(new Date(year, month + 1, nextDay));
+      }
+
+      return days;
+    }
+
+    // Обновление блока "Сегодня"
+    function updateTodayBlock() {
+      const titleEl = document.getElementById('todayTitle');
+      const dateEl = document.getElementById('todayDate');
+      const badgeEl = document.getElementById('weekBadge');
+      const blockEl = document.getElementById('todayBlock');
+
+      const weekday = today.toLocaleDateString('ru-RU', { weekday: 'long' });
+      const fullDate = today.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+      const weekType = getWeekType(today);
+
+      titleEl.textContent = `Сегодня: ${weekday}`;
+      dateEl.textContent = fullDate;
+      badgeEl.textContent = `Это ${weekType}-я неделя графика`;
+
+      if (weekType === 1) {
+        badgeEl.className = 'week-badge';
+        blockEl.className = 'today-block';
+      } else {
+        badgeEl.className = 'week-badge purple';
+        blockEl.className = 'today-block purple';
+      }
+    }
+
+    // Обновление навигации
+    function updateNav() {
+      document.getElementById('monthTitle').textContent = 
+        selectedMonth.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
+    }
+
+    // Обновление календаря
+    function updateCalendar() {
+      const grid = document.getElementById('calendarGrid');
+      grid.innerHTML = '';
+
+      const days = generateCalendar(selectedMonth.getFullYear(), selectedMonth.getMonth());
+      const todayStr = today.toDateString();
+
+      days.forEach((date, idx) => {
+        const dayEl = document.createElement('div');
+        dayEl.className = 'calendar-day';
+
+        // Определяем принадлежность к месяцу
+        if (date.getMonth() === selectedMonth.getMonth() && 
+            date.getFullYear() === selectedMonth.getFullYear()) {
+          dayEl.classList.add('current-month');
+        } else {
+          dayEl.classList.add('other-month');
+        }
+
+        // Проверка сегодняшнего дня
+        if (date.toDateString() === todayStr) {
+          dayEl.classList.add('today');
+        }
+
+        // Определяем тип недели
+        const weekType = getWeekType(date);
+        dayEl.classList.add(weekType === 1 ? 'week1' : 'week2');
+
+        // Номер дня
+        const dayNumber = document.createElement('span');
+        dayNumber.className = 'day-number';
+        dayNumber.textContent = date.getDate();
+        dayEl.appendChild(dayNumber);
+
+        // Метка недели (только для понедельников текущего месяца)
+        if (idx % 7 === 0 && 
+            date.getMonth() === selectedMonth.getMonth() && 
+            date.getFullYear() === selectedMonth.getFullYear()) {
+          const label = document.createElement('span');
+          label.className = `week-label ${weekType === 1 ? 'week1' : 'week2'}`;
+          label.textContent = weekType;
+          dayEl.appendChild(label);
+        }
+
+        grid.appendChild(dayEl);
+      });
+    }
+
+    // Инициализация
+    function init() {
+      updateTodayBlock();
+      updateNav();
+      updateCalendar();
+
+      document.getElementById('prevBtn').addEventListener('click', () => {
+        selectedMonth.setMonth(selectedMonth.getMonth() - 1);
+        updateNav();
+        updateCalendar();
+      });
+
+      document.getElementById('nextBtn').addEventListener('click', () => {
+        selectedMonth.setMonth(selectedMonth.getMonth() + 1);
+        updateNav();
+        updateCalendar();
+      });
+    }
+
+    // Запуск при загрузке
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
